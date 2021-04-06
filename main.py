@@ -1,7 +1,7 @@
 import pygame
 import Initialization
 import math
-from main_objects import character
+from main_objects import character, weapon
 from pygame import mixer
 import random
 
@@ -11,7 +11,8 @@ import random
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 pygame.init()
 
-screen = Initialization.window_start()
+start_up = Initialization
+screen = start_up.window_start()
 
 NUMBER_OF_ENEMIES = 10
 ENEMY_MOVEMENT_SPEED = 0.7
@@ -22,43 +23,6 @@ speedDown = 0
 # music
 mixer.music.load('mm8-clownman.mid')
 mixer.music.play(-1)
-
-class character:
-    def __init__(self, type):
-        self.type = type
-        if type == "boss":
-            image = pygame.image.load('tEm.gif')
-            self.image = pygame.transform.scale(image, (75, 75))
-            self.X = 350
-            self.Y = 50
-            self.movementX = 0.3
-            self.movementy = 0.3
-            print("Enemy Created: ", self.X, " | ", self.Y)
-        if type == "hero":
-            image = pygame.image.load('ZQjb.gif')
-            self.image = pygame.transform.scale(image, (100, 100))
-            self.X = 400
-            self.Y = 500
-            self.movementX = 0
-            self.movementY = 0
-
-    def getImage(self):
-        return self.image
-
-class weapon:
-    def __init__(self, type):
-        self.type = type
-        if type == "bamboo":
-            image = pygame.image.load('bamboo.png')
-            self.image = pygame.transform.scale(image, (25, 25))
-            self.X = 0
-            self.Y = 0
-            self.movementX = 0.5
-            self.movementY = 2
-            self.state = "ready"
-            print("Bamboo Created: ", self.X, " | ", self.Y)
-    def getImage(self):
-        return self.image
 
 # initialize player and boss
 enemyList = []
