@@ -1,9 +1,11 @@
 import pygame
 import Initialization
 import math
+import main_variables
+import random
 from main_objects import character, weapon
 from pygame import mixer
-import random
+
 
 # This is a sample Python script.
 
@@ -14,21 +16,13 @@ pygame.init()
 start_up = Initialization
 screen = start_up.window_start()
 
-NUMBER_OF_ENEMIES = 10
-ENEMY_MOVEMENT_SPEED = 0.7
-movementX = 0.5
-speedUp = 0
-speedDown = 0
-
-# music
-mixer.music.load('mm8-clownman.mid')
-mixer.music.play(-1)
+main_variables.NUMBER_OF_ENEMIES = random.randint(1,10)
 
 # initialize player and boss
 enemyList = []
 hero = character("hero")
 boss = character("boss")
-bamboo = weapon("bamboo")
+attack = weapon("bamboo")
 score_value = 0
 
 gameover = False
@@ -50,18 +44,18 @@ def speedHUD():
     screen.blit(score, (720,25))
 
 def generateEnemy(enemyCount):
-    distanceX = 30
+    distanceX = 75
     distanceY = 0
     for i in range(enemyCount):
         enemyList.append(character("boss"))
-        enemyList[i].X = random.randint(50+distanceX,600+distanceX)
-        enemyList[i].Y = random.randint(0+distanceY,50+distanceY)
-        enemyList[i].movementX = ENEMY_MOVEMENT_SPEED
-        enemyList[i].movementy = ENEMY_MOVEMENT_SPEED
+        enemyList[i].X = random.randint(50+distanceX,350+distanceX)
+        enemyList[i].Y = 50
+        enemyList[i].movementX = main_variables.ENEMY_MOVEMENT_SPEED
+        enemyList[i].movementY = main_variables.ENEMY_MOVEMENT_SPEED
         screen.blit(enemyList[i].getImage(), (enemyList[i].X, enemyList[i].Y))
         print("Enemy Spawned: ", enemyList[i].X)
-        distanceY += 10
-        distanceX += 10
+        distanceY += 20
+        distanceX += 60
 
 def isCollision(enemyX,enemyY,weaponX,weaponY):
     distance = math.sqrt((math.pow(enemyX-weaponX, 2)) + (math.pow(enemyY-weaponY, 2)))
@@ -92,8 +86,8 @@ def collideAction(enemy,weapon):
     weapon.state = "ready"
     enemy.X = 0
     enemy.y = 0
-    enemy.movementX = ENEMY_MOVEMENT_SPEED
-    enemy.movementy = ENEMY_MOVEMENT_SPEED
+    enemy.movementX = main_variables.ENEMY_MOVEMENT_SPEED
+    enemy.movementY = main_variables.ENEMY_MOVEMENT_SPEED
     print("======Boss Defeated=======", score_value)
 
 def stopEnemies(enemyList):
@@ -105,13 +99,13 @@ def keyInputChecker(event):
     global running
     global speedUp
     global speedDown
-    global movementX
+    #global movementX
     if event.type == pygame.KEYDOWN:
         if event.key == pygame.K_LEFT:
-            hero.movementX = -movementX
+            hero.movementX = -main_variables.movementX
             print("LEFT CLICKED")
         if event.key == pygame.K_RIGHT:
-            hero.movementX = movementX
+            hero.movementX = main_variables.movementX
             print("RIGHT CLICKED")
         if event.key == pygame.K_DOWN:
             hero.movementY = 1
@@ -120,17 +114,17 @@ def keyInputChecker(event):
             hero.movementY = -1
             print("RIGHT CLICKED")
         if event.key == pygame.K_SPACE:
-            fire(bamboo.X, bamboo.Y, bamboo)
+            fire(attack.X, attack.Y, attack)
             print("FIRE")
         if event.key == pygame.K_1:
             speedUp += 0.3
-            movementX += speedUp
-            print("Speed up: ", movementX)
+            main_variables.movementX += speedUp
+            print("Speed up: ", main_variables.movementX)
         if event.key == pygame.K_2:
-            if movementX > 0.1:
+            if main_variables.movementX > 0.1:
                 speedDown += 0.1
-                movementX -= speedDown
-            print("Speed down: ", movementX)
+                main_variables.movementX -= speedDown
+            print("Speed down: ", main_variables.movementX)
         if event.key == pygame.K_ESCAPE:
             running = False
 
@@ -174,7 +168,7 @@ def basicEnemyMovement(enemy):
         enemy.Y += 20
     enemy.X += enemy.movementX
 
-generateEnemy(NUMBER_OF_ENEMIES)
+generateEnemy(main_variables.NUMBER_OF_ENEMIES)
 running = True
 # background
 background = pygame.image.load('country-platform-preview.png')
@@ -184,7 +178,7 @@ screen.fill((22, 36, 27))
 while running:
     screen.blit(background, (0, 0))
     basicHeroMovements()
-    basicWeaponMovement(bamboo, hero)
+    basicWeaponMovement(attack, hero)
     scoreHUD()
     speedHUD()
     load_player(hero.X,hero.Y)
@@ -198,15 +192,19 @@ while running:
 
     for enemy in enemyList:
         basicEnemyMovement(enemy)
-        collision = isCollision(enemy.X, enemy.Y, bamboo.X, bamboo.Y)
+        collision = isCollision(enemy.X, enemy.Y, attack.X, attack.Y)
         playerCollision = isCollision(enemy.X, enemy.Y, hero.X, hero.Y)
         if collision:
-            collideAction(enemy, bamboo)
+            collideAction(enemy, attack)
         if playerCollision:
             hero.movementX = 0
             hero.movementY = 0
             stopEnemies(enemyList)
-        if enemy.Y >= 300:
+            for boss in enemyList:
+                boss.X = 2000
+            gameoverScreen()
+            break
+        if enemy.Y >= 700:
             print("Game Over")
             for boss in enemyList:
                 boss.X = 2000
