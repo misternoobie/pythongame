@@ -1,7 +1,12 @@
 import pygame
+from pygame import mixer
 def window_start():
     # window creation
     screen = pygame.display.set_mode((800,600))
+
+    # music
+    mixer.music.load('mm8-clownman.mid')
+    mixer.music.play(-1)
 
     # change title
     pygame.display.set_caption("Newbie game")
