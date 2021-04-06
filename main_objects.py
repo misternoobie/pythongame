@@ -8,7 +8,7 @@ class character:
       self.X = 350
       self.Y = 50
       self.movementX = 0.3
-      self.movementy = 0.3
+      self.movementY = 0.3
       print("Enemy Created: ", self.X, " | ", self.Y)
     if type == "hero":
       image = pygame.image.load('ZQjb.gif')
