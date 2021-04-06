@@ -10,8 +10,6 @@ def window_start():
     icon = pygame.image.load('chat.png')
     pygame.display.set_icon(icon)
 
-
-
     # color
     #screen.fill((22, 36, 27))
     pygame.display.update()
